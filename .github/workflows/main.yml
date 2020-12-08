@@ -15,14 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Download AHK, AHK compiler
+      - name: Build project
         run: |
           choco install autohotkey
           choco install autohotkey-compiler
           choco install 7zip
-
-      - name: Build project
-        run: |
+          refreshenv
           ahk2exe /in AutoClass.ahk /out AutoClass.exe
           ahk2exe /in Restarter.ahk /out Restarter.exe
           7z a -tzip build.zip AutoClass.exe Chrome.ahk Restarter.exe
