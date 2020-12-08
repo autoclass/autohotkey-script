@@ -1,0 +1,46 @@
+name: Build and Publish Release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Publish Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Download AHK, AHK compiler
+        run: |
+          choco install autohotkey
+          choco install autohotkey-compiler
+          choco install 7zip
+
+      - name: Build project
+        run: |
+          ahk2exe /in AutoClass.ahk /out AutoClass.exe
+          ahk2exe /in Restarter.ahk /out Restarter.exe
+          7z a -tzip build.zip AutoClass.exe Chrome.ahk Restarter.exe
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./build.zip
+          asset_name: build.zip
+          asset_content_type: application/zip
