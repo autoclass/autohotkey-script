@@ -21,7 +21,6 @@ jobs:
           choco install autohotkey
           choco install autohotkey-compiler
           choco install 7zip
-          refreshenv
           C:\Program Files\AutoHotkey\Compiler\ahk2exe.exe /in AutoClass.ahk /out AutoClass.exe
           C:\Program Files\AutoHotkey\Compiler\ahk2exe.exe /in Restarter.ahk /out Restarter.exe
           7z a -tzip build.zip AutoClass.exe Chrome.ahk Restarter.exe
