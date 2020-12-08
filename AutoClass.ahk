@@ -14,10 +14,8 @@ SetTitleMatchMode,2
 Loop
 {
 
-    if(IfWinNotExist, Chrome)
-    {
+    IfWinNotExist, Google Chrome
         break
-    }
     else
     {
         WinActivate, Google Chrome
